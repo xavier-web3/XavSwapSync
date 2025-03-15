@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ProjectsTask/EasySwapSync/cmd"
+	"github.com/xavier-web3/XavSwapSync/cmd"
 )
 
 func main() {

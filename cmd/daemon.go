@@ -9,8 +9,9 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/xavier-web3/XavSwapBase/logger/xzap"
 	"github.com/spf13/cobra"
+	"github.com/xavier-web3/XavSwapBase/logger/xzap"
+	"github.com/xavier-web3/XavSwapSync/service"
 	"github.com/xavier-web3/XavSwapSync/service/config"
 	"go.uber.org/zap"
 )

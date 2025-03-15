@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/pkg/errors"
 	"github.com/xavier-web3/XavSwapBase/chain"
 	"github.com/xavier-web3/XavSwapBase/chain/chainclient"
 	"github.com/xavier-web3/XavSwapBase/ordermanager"
 	"github.com/xavier-web3/XavSwapBase/stores/xkv"
-	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/kv"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -54,7 +54,15 @@ func New(ctx context.Context, cfg *config.Config) (*Service, error) {
 	var orderbookSyncer *orderbookindexer.Service
 	var chainClient chainclient.ChainClient
 	fmt.Println("chainClient url:" + cfg.AnkrCfg.HttpsUrl + cfg.AnkrCfg.ApiKey)
-	chainClient.err := chainclient.New(int(cfg.ChainCfg.ID), cfg.AnkrCfg.HttpsUrl+cfg.AnkrCfg.ApiKey)
+	chainClient, err = chainclient.New(int(cfg.ChainCfg.ID), cfg.AnkrCfg.HttpsUrl+cfg.AnkrCfg.ApiKey)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed on create evm client")
+	}
+	switch cfg.ChainCfg.ID {
+	case chain.EthChainID, chain.OptimismChainID, chain.SepoliaChainID:
+		orderbookSyncer = orderbookindexer.New(ctx, cfg, db, kvStore, chainClient, cfg.ChainCfg.ID, cfg.ChainCfg.Name, orderManager)
+	}
 	if err != nil {
 		return nil, errors.Wrap(err, "failed on create trade info server")
 	}
