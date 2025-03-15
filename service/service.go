@@ -55,10 +55,10 @@ func New(ctx context.Context, cfg *config.Config) (*Service, error) {
 	var chainClient chainclient.ChainClient
 	fmt.Println("chainClient url:" + cfg.AnkrCfg.HttpsUrl + cfg.AnkrCfg.ApiKey)
 	chainClient, err = chainclient.New(int(cfg.ChainCfg.ID), cfg.AnkrCfg.HttpsUrl+cfg.AnkrCfg.ApiKey)
-
 	if err != nil {
 		return nil, errors.Wrap(err, "failed on create evm client")
 	}
+
 	switch cfg.ChainCfg.ID {
 	case chain.EthChainID, chain.OptimismChainID, chain.SepoliaChainID:
 		orderbookSyncer = orderbookindexer.New(ctx, cfg, db, kvStore, chainClient, cfg.ChainCfg.ID, cfg.ChainCfg.Name, orderManager)
